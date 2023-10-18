@@ -1,7 +1,8 @@
 from pymysql import cursors
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
+import os
 
-db_connection_string = "mysql+pymysql://wdkj02w44ki25gka17ev:pscale_pw_8d5YNVD0LthjtvqdjbXNm3bUbOeOXXTBwkeoGzO4iUj@aws.connect.psdb.cloud/careers_debug?charset=utf8mb4"
+db_connection_string = os.environ['DB_CONNECTION_STRING']
 engine = create_engine(
     db_connection_string,
     connect_args={
@@ -10,4 +11,10 @@ engine = create_engine(
         }
     }
 )
+def load_jobs_from_db():
+  with engine.connect() as conn:
+    query = text("SELECT * FROM jobs")
+    result = conn.execute(query)  # Execute the query
+    jobs = result.fetchall()
+    return jobs
 
